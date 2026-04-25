@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,14 +68,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isPublicRequest(HttpServletRequest request) {
         String path = request.getRequestURI();
-        if ("/properties/health".equals(path)) return true;
-        if (path != null && path.startsWith("/actuator")) return true;
+        String method = request.getMethod();
+        if (path == null) return false;
 
-        // Allow public browsing/search.
-        if (HttpMethod.GET.matches(request.getMethod())) {
+        if (path.startsWith("/actuator")) return true;
+        if ("/error".equals(path)) return true;
+
+        if ("GET".equalsIgnoreCase(method)) {
             if ("/properties/search".equals(path)) return true;
-            // Allow only GET /properties/{id} (not /properties/owner/{ownerId})
-            if (path != null && path.matches("^/properties/\\d+$")) return true;
+            if (path.startsWith("/properties") && !path.contains("/owner/")) return true;
         }
 
         return false;
