@@ -106,9 +106,4 @@ public class PropertyController {
                 propertyType, parking, propertyAge, minBuiltUpArea, maxBuiltUpArea,
                 minRent, maxRent, sortBy, page, size));
     }
-
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Property-Service is UP");
-    }
 }
