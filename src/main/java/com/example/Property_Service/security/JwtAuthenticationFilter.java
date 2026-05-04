@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String method = request.getMethod();
         if (path == null) return false;
 
-        if (path.startsWith("/actuator")) return true;
+        if (path != null && path.contains("/actuator")) return true;
         if ("/error".equals(path)) return true;
 
         if ("GET".equalsIgnoreCase(method)) {
